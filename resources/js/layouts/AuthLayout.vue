@@ -8,7 +8,9 @@
 </script>
 
 <template>
-  <AuthLayout :title="title" :description="description">
-    <slot />
-  </AuthLayout>
+  <UApp>
+    <AuthLayout :title="title" :description="description">
+      <slot />
+    </AuthLayout>
+  </UApp>
 </template>

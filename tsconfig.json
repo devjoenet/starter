@@ -31,7 +31,7 @@
     // "baseUrl": "./",                                  /* Specify the base directory to resolve non-relative module names. */
     "paths": {
       "@/*": ["./resources/js/*"],
-      "#build/ui": ["./node_modules/@nuxt/ui/.nuxt/ui"]
+      "#build/ui/*": ["./node_modules/@nuxt/ui/.nuxt/ui/*"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
@@ -111,5 +111,13 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["resources/js/**/*.ts", "resources/js/**/*.d.ts", "resources/js/**/*.tsx", "resources/js/**/*.vue", "auto-imports.d.ts", "components.d.ts"]
+  "include": [
+    "resources/js/**/*.ts",
+    "resources/js/**/*.d.ts",
+    "resources/js/**/*.tsx",
+    "resources/js/**/*.vue",
+    "auto-imports.d.ts",
+    "components.d.ts",
+    "node_modules/@compodium/vue/dist/index.d.ts"
+  ]
 }

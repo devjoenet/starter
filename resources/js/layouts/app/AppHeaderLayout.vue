@@ -14,10 +14,12 @@
 </script>
 
 <template>
-  <AppShell class="flex-col">
-    <AppHeader :breadcrumbs="breadcrumbs" />
-    <AppContent>
-      <slot />
-    </AppContent>
-  </AppShell>
+  <UApp>
+    <AppShell class="flex-col">
+      <AppHeader :breadcrumbs="breadcrumbs" />
+      <AppContent>
+        <slot />
+      </AppContent>
+    </AppShell>
+  </UApp>
 </template>

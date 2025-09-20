@@ -3,6 +3,7 @@
   "bracketSameLine": false,
   "singleAttributePerLine": false,
   "vueIndentScriptAndStyle": true,
+  "tabWidth": 2,
   "plugins": ["@shufo/prettier-plugin-blade"],
   "overrides": [
     {

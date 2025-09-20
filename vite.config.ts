@@ -24,6 +24,17 @@ export default defineConfig({
         },
       },
     }),
-    ui(),
+    ui({
+      inertia: true,
+      components: {
+        dirs: ["resources/js/components"],
+      },
+      ui: {
+        colors: {
+          primary: "scarlet",
+          neutral: "neutral",
+        },
+      },
+    }),
   ],
 });

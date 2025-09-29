@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import AlertError from "@/components/AlertError.vue";
-  import { Button } from "@/components/ui/button";
+  import { Button } from "@/components/ui/Button";
   import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
   import { useTwoFactorAuth } from "@/composables/useTwoFactorAuth";
   import { regenerateRecoveryCodes } from "@/routes/two-factor";

@@ -1,16 +1,8 @@
-<script setup lang="ts">
-  import { Link } from "@inertiajs/vue3";
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <UApp>
-    <UHeader>
-      <template #left>
-        <Link href="/">
-          <AppLogo class="h-6 w-auto shrink-0" />
-        </Link>
-      </template>
-
+    <UHeader :title="$page.props.name">
       <template #right>
         <UColorModeButton as="button" :disabled="false" color="neutral" variant="ghost" />
         <UButton to="https://github.com/nuxt-ui-templates/starter-laravel" target="_blank" icon="simple-icons:github" aria-label="GitHub" color="neutral" variant="ghost" />

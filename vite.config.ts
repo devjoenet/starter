@@ -43,7 +43,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./resources/js"),
       "#build/ui": path.resolve("./node_modules/@nuxt/ui/.nuxt/ui"),
-      "@nm": path.resolve("./node_modules"),
+      "!nuxtui": path.resolve("./node_modules/@nuxt/ui"),
     },
   },
 });

@@ -2586,14 +2586,14 @@ namespace PHPSTORM_META {
 'laravel-exceptions-renderer::components.icons.check','laravel-exceptions-renderer::components.icons.chevron-left','laravel-exceptions-renderer::components.icons.chevron-right','laravel-exceptions-renderer::components.icons.chevrons-down-up','laravel-exceptions-renderer::components.icons.chevrons-left',
 'laravel-exceptions-renderer::components.icons.chevrons-right','laravel-exceptions-renderer::components.icons.chevrons-up-down','laravel-exceptions-renderer::components.icons.copy','laravel-exceptions-renderer::components.icons.database','laravel-exceptions-renderer::components.icons.folder',
 'laravel-exceptions-renderer::components.icons.folder-open','laravel-exceptions-renderer::components.icons.globe','laravel-exceptions-renderer::components.icons.info','laravel-exceptions-renderer::components.icons.laravel-ascii','laravel-exceptions-renderer::components.laravel-ascii-spotlight',
-'laravel-exceptions-renderer::components.layout','laravel-exceptions-renderer::components.overview','laravel-exceptions-renderer::components.query','laravel-exceptions-renderer::components.request-body','laravel-exceptions-renderer::components.request-header',
-'laravel-exceptions-renderer::components.request-url','laravel-exceptions-renderer::components.routing','laravel-exceptions-renderer::components.routing-parameter','laravel-exceptions-renderer::components.section-container','laravel-exceptions-renderer::components.separator',
-'laravel-exceptions-renderer::components.syntax-highlight','laravel-exceptions-renderer::components.topbar','laravel-exceptions-renderer::components.trace','laravel-exceptions-renderer::components.vendor-frame','laravel-exceptions-renderer::components.vendor-frames',
-'laravel-exceptions-renderer::markdown','laravel-exceptions-renderer::show','laravel-exceptions::401','laravel-exceptions::402','laravel-exceptions::403',
-'laravel-exceptions::404','laravel-exceptions::419','laravel-exceptions::429','laravel-exceptions::500','laravel-exceptions::503',
-'laravel-exceptions::layout','laravel-exceptions::minimal','notifications::email','pagination::bootstrap-4','pagination::bootstrap-5',
-'pagination::default','pagination::semantic-ui','pagination::simple-bootstrap-4','pagination::simple-bootstrap-5','pagination::simple-default',
-'pagination::simple-tailwind','pagination::tailwind',);
+'laravel-exceptions-renderer::components.layout','laravel-exceptions-renderer::components.query','laravel-exceptions-renderer::components.request-body','laravel-exceptions-renderer::components.request-header','laravel-exceptions-renderer::components.request-url',
+'laravel-exceptions-renderer::components.routing','laravel-exceptions-renderer::components.routing-parameter','laravel-exceptions-renderer::components.section-container','laravel-exceptions-renderer::components.separator','laravel-exceptions-renderer::components.syntax-highlight',
+'laravel-exceptions-renderer::components.topbar','laravel-exceptions-renderer::components.trace','laravel-exceptions-renderer::components.vendor-frame','laravel-exceptions-renderer::components.vendor-frames','laravel-exceptions-renderer::markdown',
+'laravel-exceptions-renderer::show','laravel-exceptions::401','laravel-exceptions::402','laravel-exceptions::403','laravel-exceptions::404',
+'laravel-exceptions::419','laravel-exceptions::429','laravel-exceptions::500','laravel-exceptions::503','laravel-exceptions::layout',
+'laravel-exceptions::minimal','notifications::email','pagination::bootstrap-4','pagination::bootstrap-5','pagination::default',
+'pagination::semantic-ui','pagination::simple-bootstrap-4','pagination::simple-bootstrap-5','pagination::simple-default','pagination::simple-tailwind',
+'pagination::tailwind',);
         registerArgumentsSet('translations', 
 'auth.failed','auth.password','auth.throttle','pagination.previous','pagination.next',
 'passwords.reset','passwords.sent','passwords.throttled','passwords.token','passwords.user',
@@ -2626,15 +2626,16 @@ namespace PHPSTORM_META {
 'validation.uppercase','validation.url','validation.ulid','validation.uuid','validation.custom.attribute-name.rule-name',);
         registerArgumentsSet('env', 
 'APP_NAME','APP_ENV','APP_KEY','APP_DEBUG','APP_URL',
-'APP_LOCALE','APP_FALLBACK_LOCALE','APP_FAKER_LOCALE','APP_MAINTENANCE_DRIVER','PHP_CLI_SERVER_WORKERS',
-'BCRYPT_ROUNDS','LOG_CHANNEL','LOG_STACK','LOG_DEPRECATIONS_CHANNEL','LOG_LEVEL',
-'DB_CONNECTION','DB_HOST','DB_PORT','DB_DATABASE','DB_USERNAME',
-'DB_PASSWORD','SESSION_DRIVER','SESSION_LIFETIME','SESSION_ENCRYPT','SESSION_PATH',
-'SESSION_DOMAIN','BROADCAST_CONNECTION','FILESYSTEM_DISK','QUEUE_CONNECTION','CACHE_STORE',
-'MEMCACHED_HOST','REDIS_CLIENT','REDIS_HOST','REDIS_PASSWORD','REDIS_PORT',
-'MAIL_MAILER','MAIL_SCHEME','MAIL_HOST','MAIL_PORT','MAIL_USERNAME',
-'MAIL_PASSWORD','MAIL_FROM_ADDRESS','MAIL_FROM_NAME','AWS_ACCESS_KEY_ID','AWS_SECRET_ACCESS_KEY',
-'AWS_DEFAULT_REGION','AWS_BUCKET','AWS_USE_PATH_STYLE_ENDPOINT','VITE_APP_NAME',);
+'APP_REPO','APP_LOCALE','APP_FALLBACK_LOCALE','APP_FAKER_LOCALE','APP_MAINTENANCE_DRIVER',
+'PHP_CLI_SERVER_WORKERS','BCRYPT_ROUNDS','LOG_CHANNEL','LOG_STACK','LOG_DEPRECATIONS_CHANNEL',
+'LOG_LEVEL','DB_CONNECTION','DB_HOST','DB_PORT','DB_DATABASE',
+'DB_USERNAME','DB_PASSWORD','SESSION_DRIVER','SESSION_LIFETIME','SESSION_ENCRYPT',
+'SESSION_PATH','SESSION_DOMAIN','BROADCAST_CONNECTION','FILESYSTEM_DISK','QUEUE_CONNECTION',
+'CACHE_STORE','MEMCACHED_HOST','REDIS_CLIENT','REDIS_HOST','REDIS_PASSWORD',
+'REDIS_PORT','MAIL_MAILER','MAIL_SCHEME','MAIL_HOST','MAIL_PORT',
+'MAIL_USERNAME','MAIL_PASSWORD','MAIL_FROM_ADDRESS','MAIL_FROM_NAME','AWS_ACCESS_KEY_ID',
+'AWS_SECRET_ACCESS_KEY','AWS_DEFAULT_REGION','AWS_BUCKET','AWS_USE_PATH_STYLE_ENDPOINT','VITE_APP_NAME',
+'VITE_APP_REPO',);
         
                 expectedArguments(\Illuminate\Support\Facades\Gate::has(), 0, argumentsSet('auth'));
     expectedArguments(\Illuminate\Support\Facades\Gate::allows(), 0, argumentsSet('auth'));

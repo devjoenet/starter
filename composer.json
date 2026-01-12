@@ -1,30 +1,45 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/vue-starter-kit",
+    "name": "devjoenet/starter-kit",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "starter-kit",
+        "vue",
+        "inertiajs",
+        "tailwindcss",
+        "laravel-starter-kit"
     ],
     "license": "MIT",
     "require": {
+        "ext-pdo": "*",
         "php": "^8.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/fortify": "^1.30",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "laravel/wayfinder": "^0.1.9"
+        "laravel/wayfinder": "^0.1.9",
+        "league/flysystem-aws-s3-v3": "^3.30",
+        "spatie/laravel-data": "^4.18",
+        "spatie/laravel-permission": "^6.23",
+        "spatie/laravel-typescript-transformer": "^2.5"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.6",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^1.8",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^4.3",
-        "pestphp/pest-plugin-laravel": "^4.0"
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
+        "rector/rector": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -39,13 +54,27 @@
         }
     },
     "scripts": {
+        "format": [
+            "./vendor/bin/rector",
+            "./vendor/bin/pint",
+            "npm run format"
+        ],
+        "ide": [
+            "@php artisan ide-helper:generate --write_mixins --helpers",
+            "@php artisan ide-helper:models --nowrite --reset --phpstorm-noinspections",
+            "@php artisan ide-helper:meta",
+            "rm -f AGENTS.md GEMINI.md",
+            "@php artisan boost:update --ansi"
+        ],
         "setup": [
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
             "@php artisan migrate --force",
             "npm install",
-            "npm run build"
+            "npm run build",
+            "@ide",
+            "@format"
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
@@ -71,8 +100,15 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
+        "post-install-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@ide",
+            "@format"
+        ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@ide",
+            "@format"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

@@ -55,7 +55,7 @@
       "group relative flex w-full items-center gap-2 rounded-xl transition",
       "focus-within:ring-ring/40 focus-within:ring-2",
       props.variant === "filled" ? "border border-transparent bg-[color:var(--surface-variant)] shadow-xs" : "border border-input bg-transparent shadow-xs",
-      props.density === "compact" ? "px-3 pt-3 pb-1.5" : "px-3 pt-4 pb-2",
+      props.density === "compact" ? "px-3 pt-3.5 pb-2" : "px-3 pt-5 pb-3",
       "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
       props.class,
     ),
@@ -68,8 +68,13 @@
   const labelClasses = computed(() =>
     cn(
       "pointer-events-none absolute left-3 text-sm text-muted-foreground transition-all",
-      props.density === "compact" ? "top-3" : "top-4",
-      props.density === "compact" ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5" : "peer-placeholder-shown:top-4 peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
+      props.density === "compact" ? "top-3" : "top-[1.125rem]",
+      props.density === "compact"
+        ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5"
+        : "peer-placeholder-shown:top-[1.125rem] peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
+      props.density === "compact"
+        ? "peer-focus:-translate-y-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-0.5"
+        : "peer-focus:-translate-y-1 peer-[&:not(:placeholder-shown)]:-translate-y-1",
       "peer-placeholder-shown:text-sm peer-focus:text-xs peer-[&:not(:placeholder-shown)]:text-xs",
       props.variant === "filled" ? "text-muted-foreground/80" : "bg-background px-1",
       "peer-focus:text-primary",

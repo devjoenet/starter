@@ -14,6 +14,7 @@ class ListUsers
     public function execute(): DataCollection|Collection
     {
         $users = User::query()
+            ->with('roles')
             ->orderBy('name')
             ->get();
 

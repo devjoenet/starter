@@ -43,6 +43,52 @@ it('creates a user from the admin modal', function () {
     ]);
 });
 
+it('updates a user from the admin modal', function () {
+    $admin = User::factory()->create();
+    $originalRole = Role::query()->create([
+        'name' => 'Account Manager',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+    $newRole = Role::query()->create([
+        'name' => 'Team Lead',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+    $user = User::factory()->create([
+        'name' => 'Old Name',
+        'email' => 'old@example.com',
+    ]);
+
+    $user->assignRole($originalRole);
+
+    $this->actingAs($admin);
+
+    $response = $this->patch(route('admin.users.update', $user), [
+        'name' => 'Updated Name',
+        'email' => 'updated@example.com',
+        'role_id' => $newRole->id,
+    ]);
+
+    $response->assertRedirect(route('admin.users.index'));
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'name' => 'Updated Name',
+        'email' => 'updated@example.com',
+    ]);
+
+    $this->assertDatabaseHas('model_has_roles', [
+        'role_id' => $newRole->id,
+        'model_id' => $user->id,
+        'model_type' => User::class,
+    ]);
+
+    $this->assertDatabaseMissing('model_has_roles', [
+        'role_id' => $originalRole->id,
+        'model_id' => $user->id,
+        'model_type' => User::class,
+    ]);
+});
+
 it('creates a role from the admin modal', function () {
     $admin = User::factory()->create();
 

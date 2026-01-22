@@ -15,6 +15,7 @@ class UserListData extends Data
         public string $email,
         public ?string $emailVerifiedAt,
         public string $createdAt,
+        public ?int $roleId,
     ) {}
 
     public static function fromModel(User $user): self
@@ -25,6 +26,7 @@ class UserListData extends Data
             $user->email,
             $user->email_verified_at?->toDateTimeString(),
             $user->created_at?->toDateTimeString() ?? '',
+            $user->roles->first()?->id,
         );
     }
 }

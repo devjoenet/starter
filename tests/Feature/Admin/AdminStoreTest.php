@@ -101,7 +101,7 @@ it('creates a role from the admin modal', function () {
 
     $response = $this->post(route('admin.roles.store'), [
         'name' => 'Creative Director',
-        'permissions' => [$permission->id],
+        'permissions' => [(string) $permission->id],
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));
@@ -157,7 +157,7 @@ it('updates a role with permissions from the admin modal', function () {
 
     $response = $this->patch(route('admin.roles.update', $role), [
         'name' => 'Billing Lead',
-        'permissions' => [$secondPermission->id],
+        'permissions' => [(string) $secondPermission->id],
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));

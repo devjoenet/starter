@@ -15,7 +15,13 @@ class UpdateRole
             'name' => $data->name,
         ]);
 
-        $role->syncPermissions($data->permissions);
+        $permissions = collect($data->permissions)
+            ->map(static fn (int|string $permissionId): int => (int) $permissionId)
+            ->filter()
+            ->values()
+            ->all();
+
+        $role->syncPermissions($permissions);
 
         return $role;
     }

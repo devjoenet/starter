@@ -16,7 +16,13 @@ class CreateRole
             'guard_name' => config('auth.defaults.guard'),
         ]);
 
-        $role->syncPermissions($data->permissions);
+        $permissions = collect($data->permissions)
+            ->map(static fn (int|string $permissionId): int => (int) $permissionId)
+            ->filter()
+            ->values()
+            ->all();
+
+        $role->syncPermissions($permissions);
 
         return $role;
     }

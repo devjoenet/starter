@@ -16,17 +16,21 @@ class UserListData extends Data
         public ?string $emailVerifiedAt,
         public string $createdAt,
         public ?int $roleId,
+        public ?string $roleName,
     ) {}
 
     public static function fromModel(User $user): self
     {
+        $role = $user->roles->first();
+
         return new self(
             $user->id,
             $user->name,
             $user->email,
             $user->email_verified_at?->toDateTimeString(),
             $user->created_at?->toDateTimeString() ?? '',
-            $user->roles->first()?->id,
+            $role?->id,
+            $role?->name,
         );
     }
 }

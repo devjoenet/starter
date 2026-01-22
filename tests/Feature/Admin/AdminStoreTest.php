@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -91,11 +92,16 @@ it('updates a user from the admin modal', function () {
 
 it('creates a role from the admin modal', function () {
     $admin = User::factory()->create();
+    $permission = Permission::query()->create([
+        'name' => 'manage brand assets',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
 
     $this->actingAs($admin);
 
     $response = $this->post(route('admin.roles.store'), [
         'name' => 'Creative Director',
+        'permissions' => [$permission->id],
     ]);
 
     $response->assertRedirect(route('admin.roles.index'));
@@ -103,6 +109,13 @@ it('creates a role from the admin modal', function () {
     $this->assertDatabaseHas('roles', [
         'name' => 'Creative Director',
         'guard_name' => config('auth.defaults.guard'),
+    ]);
+
+    $role = Role::query()->where('name', 'Creative Director')->firstOrFail();
+
+    $this->assertDatabaseHas('role_has_permissions', [
+        'role_id' => $role->id,
+        'permission_id' => $permission->id,
     ]);
 });
 
@@ -120,5 +133,47 @@ it('creates a permission from the admin modal', function () {
     $this->assertDatabaseHas('permissions', [
         'name' => 'edit client brief',
         'guard_name' => config('auth.defaults.guard'),
+    ]);
+});
+
+it('updates a role with permissions from the admin modal', function () {
+    $admin = User::factory()->create();
+    $permission = Permission::query()->create([
+        'name' => 'view invoices',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+    $secondPermission = Permission::query()->create([
+        'name' => 'export invoices',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+    $role = Role::query()->create([
+        'name' => 'Billing',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+
+    $role->syncPermissions([$permission]);
+
+    $this->actingAs($admin);
+
+    $response = $this->patch(route('admin.roles.update', $role), [
+        'name' => 'Billing Lead',
+        'permissions' => [$secondPermission->id],
+    ]);
+
+    $response->assertRedirect(route('admin.roles.index'));
+
+    $this->assertDatabaseHas('roles', [
+        'id' => $role->id,
+        'name' => 'Billing Lead',
+    ]);
+
+    $this->assertDatabaseHas('role_has_permissions', [
+        'role_id' => $role->id,
+        'permission_id' => $secondPermission->id,
+    ]);
+
+    $this->assertDatabaseMissing('role_has_permissions', [
+        'role_id' => $role->id,
+        'permission_id' => $permission->id,
     ]);
 });

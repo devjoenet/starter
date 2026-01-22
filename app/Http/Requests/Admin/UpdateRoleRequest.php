@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Role;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreRoleRequest extends FormRequest
+class UpdateRoleRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,14 +16,17 @@ class StoreRoleRequest extends FormRequest
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array<int, string|\Illuminate\Contracts\Validation\ValidationRule>>
      */
     public function rules(): array
     {
+        /** @var Role $role */
+        $role = $this->route('role');
+
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->ignore($role->id)],
             'permissions' => ['sometimes', 'array'],
-            'permissions.*' => ['integer', 'exists:permissions,id'],
+            'permissions.*' => ['integer', Rule::exists('permissions', 'id')],
         ];
     }
 

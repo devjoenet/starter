@@ -9,7 +9,6 @@
   import InputError from "@/components/InputError.vue";
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import { Label } from "@/components/ui/label";
   import AppLayout from "@/layouts/AppLayout.vue";
   import SettingsLayout from "@/layouts/settings/Layout.vue";
   import { type BreadcrumbItem } from "@/types";
@@ -44,14 +43,12 @@
 
         <Form v-bind="ProfileController.update.form()" class="space-y-6" v-slot="{ errors, processing, recentlySuccessful }">
           <div class="grid gap-2">
-            <Label for="name">Name</Label>
-            <Input id="name" class="mt-1 block w-full" name="name" :default-value="user.name" required autocomplete="name" placeholder="Full name" />
+            <Input id="name" name="name" :default-value="user.name" required autocomplete="name" label="Full name" variant="filled" />
             <InputError class="mt-2" :message="errors.name" />
           </div>
 
           <div class="grid gap-2">
-            <Label for="email">Email address</Label>
-            <Input id="email" type="email" class="mt-1 block w-full" name="email" :default-value="user.email" required autocomplete="username" placeholder="Email address" />
+            <Input id="email" type="email" name="email" :default-value="user.email" required autocomplete="username" label="Email address" variant="filled" />
             <InputError class="mt-2" :message="errors.email" />
           </div>
 

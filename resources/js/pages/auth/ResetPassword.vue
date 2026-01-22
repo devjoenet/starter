@@ -2,7 +2,6 @@
   import InputError from "@/components/InputError.vue";
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import { Label } from "@/components/ui/label";
   import { Spinner } from "@/components/ui/spinner";
   import AuthLayout from "@/layouts/AuthLayout.vue";
   import { update } from "@/routes/password";
@@ -24,20 +23,17 @@
     <Form v-bind="update.form()" :transform="(data) => ({ ...data, token, email })" :reset-on-success="['password', 'password_confirmation']" v-slot="{ errors, processing }">
       <div class="grid gap-6">
         <div class="grid gap-2">
-          <Label for="email">Email</Label>
-          <Input id="email" type="email" name="email" autocomplete="email" v-model="inputEmail" class="mt-1 block w-full" readonly />
+          <Input id="email" type="email" name="email" autocomplete="email" v-model="inputEmail" label="Email" variant="filled" readonly />
           <InputError :message="errors.email" class="mt-2" />
         </div>
 
         <div class="grid gap-2">
-          <Label for="password">Password</Label>
-          <Input id="password" type="password" name="password" autocomplete="new-password" class="mt-1 block w-full" autofocus placeholder="Password" />
+          <Input id="password" type="password" name="password" autocomplete="new-password" autofocus label="Password" variant="filled" />
           <InputError :message="errors.password" />
         </div>
 
         <div class="grid gap-2">
-          <Label for="password_confirmation"> Confirm Password </Label>
-          <Input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" class="mt-1 block w-full" placeholder="Confirm password" />
+          <Input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" label="Confirm password" variant="filled" />
           <InputError :message="errors.password_confirmation" />
         </div>
 

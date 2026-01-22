@@ -9,7 +9,6 @@
   import { Button } from "@/components/ui/button";
   import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
   import { Input } from "@/components/ui/input";
-  import { Label } from "@/components/ui/label";
 
   const passwordInput = useTemplateRef("passwordInput");
 </script>
@@ -43,8 +42,7 @@
             </DialogHeader>
 
             <div class="grid gap-2">
-              <Label for="password" class="sr-only">Password</Label>
-              <Input id="password" type="password" name="password" ref="passwordInput" placeholder="Password" />
+              <Input id="password" type="password" name="password" ref="passwordInput" label="Password" variant="filled" />
               <InputError :message="errors.password" />
             </div>
 

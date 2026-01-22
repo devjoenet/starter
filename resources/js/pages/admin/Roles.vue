@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import AppLayout from "@/layouts/AppLayout.vue";
-  import { index as adminRoles, store as storeRole } from "@/routes/admin/roles";
+  import { index as adminRoles, store as storeRole, update as updateRole } from "@/routes/admin/roles";
   import { type BreadcrumbItem } from "@/types";
   import { Form, Head } from "@inertiajs/vue3";
   import { ref } from "vue";
@@ -8,9 +8,11 @@
   import InputError from "@/components/InputError.vue";
   import { Badge } from "@/components/ui/badge";
   import { Button } from "@/components/ui/button";
+  import { Checkbox } from "@/components/ui/checkbox";
   import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
   import { Input } from "@/components/ui/input";
-  import { Plus, ShieldCheck } from "lucide-vue-next";
+  import { Label } from "@/components/ui/label";
+  import { Pencil, Plus, ShieldCheck } from "lucide-vue-next";
 
   interface RoleListItem {
     id: number;
@@ -19,10 +21,17 @@
     permissionsCount: number;
     usersCount: number;
     createdAt: string;
+    permissionIds: number[];
+  }
+
+  interface PermissionListItem {
+    id: number;
+    name: string;
   }
 
   interface Props {
     roles: RoleListItem[];
+    permissions: PermissionListItem[];
   }
 
   const props = defineProps<Props>();
@@ -36,15 +45,60 @@
 
   const isDetailOpen = ref(false);
   const isCreateOpen = ref(false);
+  const isEditOpen = ref(false);
   const selectedRole = ref<RoleListItem | null>(null);
+  const selectedRoleForEdit = ref<RoleListItem | null>(null);
+  const selectedCreatePermissions = ref<string[]>([]);
+  const selectedEditPermissions = ref<string[]>([]);
 
   const openDetail = (role: RoleListItem) => {
     selectedRole.value = role;
     isDetailOpen.value = true;
   };
 
+  const openCreateModal = () => {
+    selectedCreatePermissions.value = [];
+    isCreateOpen.value = true;
+  };
+
   const closeCreateModal = () => {
     isCreateOpen.value = false;
+    selectedCreatePermissions.value = [];
+  };
+
+  const openEditModal = (role: RoleListItem) => {
+    selectedRoleForEdit.value = role;
+    selectedEditPermissions.value = role.permissionIds.map((permissionId) => String(permissionId));
+    isEditOpen.value = true;
+  };
+
+  const closeEditModal = () => {
+    isEditOpen.value = false;
+    selectedRoleForEdit.value = null;
+    selectedEditPermissions.value = [];
+  };
+
+  const openEditFromDetail = () => {
+    if (!selectedRole.value) {
+      return;
+    }
+
+    openEditModal(selectedRole.value);
+    isDetailOpen.value = false;
+  };
+
+  const togglePermission = (target: typeof selectedCreatePermissions, permissionId: string, checked: boolean | "indeterminate") => {
+    const isChecked = checked === true;
+
+    if (isChecked) {
+      if (!target.value.includes(permissionId)) {
+        target.value = [...target.value, permissionId];
+      }
+
+      return;
+    }
+
+    target.value = target.value.filter((id) => id !== permissionId);
   };
 </script>
 
@@ -59,7 +113,7 @@
           <p class="text-sm text-muted-foreground">Define access levels for teams and projects.</p>
         </div>
 
-        <Button class="gap-2" @click="isCreateOpen = true">
+        <Button class="gap-2" @click="openCreateModal">
           <Plus class="size-4" />
           Create role
         </Button>
@@ -87,7 +141,7 @@
           <p class="text-sm font-medium text-foreground">No roles yet</p>
           <p class="text-xs text-muted-foreground">Create a role to begin assigning access.</p>
         </div>
-        <Button size="sm" class="gap-2" @click="isCreateOpen = true">
+        <Button size="sm" class="gap-2" @click="openCreateModal">
           <Plus class="size-4" />
           Create role
         </Button>
@@ -121,6 +175,14 @@
             <span class="font-medium text-foreground">{{ selectedRole.createdAt }}</span>
           </div>
         </div>
+
+        <div class="flex items-center justify-end gap-3">
+          <Button type="button" variant="ghost" @click="isDetailOpen = false">Close</Button>
+          <Button type="button" class="gap-2" @click="openEditFromDetail">
+            <Pencil class="size-4" />
+            Edit role
+          </Button>
+        </div>
       </div>
     </DialogContent>
   </Dialog>
@@ -135,9 +197,67 @@
         <Input id="create-role-name" name="name" label="Role name" variant="filled" required />
         <InputError :message="errors.name" />
 
+        <div class="grid gap-2">
+          <div class="flex items-center justify-between">
+            <Label class="text-sm font-medium text-foreground">Permissions</Label>
+            <span class="text-xs text-muted-foreground">{{ selectedCreatePermissions.length }} selected</span>
+          </div>
+          <div class="grid max-h-56 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
+            <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
+            <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`create-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition hover:bg-accent/60">
+              <Checkbox
+                :id="`create-permission-${permission.id}`"
+                :checked="selectedCreatePermissions.includes(String(permission.id))"
+                @update:checked="(checked) => togglePermission(selectedCreatePermissions, String(permission.id), checked)"
+              />
+              <span>{{ permission.name }}</span>
+            </label>
+          </div>
+          <input v-for="permissionId in selectedCreatePermissions" :key="permissionId" type="hidden" name="permissions[]" :value="permissionId" />
+          <InputError :message="errors.permissions ?? errors['permissions.0']" />
+        </div>
+
         <div class="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="ghost" @click="closeCreateModal">Cancel</Button>
           <Button type="submit" :disabled="processing">Create role</Button>
+        </div>
+      </Form>
+    </DialogContent>
+  </Dialog>
+
+  <Dialog :open="isEditOpen" @update:open="isEditOpen = $event">
+    <DialogContent class="sm:max-w-lg">
+      <DialogHeader class="gap-2">
+        <DialogTitle>Edit role</DialogTitle>
+        <DialogDescription>Adjust the role name and assigned permissions.</DialogDescription>
+      </DialogHeader>
+      <Form v-if="selectedRoleForEdit" v-bind="updateRole.form(selectedRoleForEdit.id)" class="grid gap-4" reset-on-success :options="{ onSuccess: closeEditModal }" v-slot="{ errors, processing }">
+        <Input id="edit-role-name" name="name" label="Role name" variant="filled" :default-value="selectedRoleForEdit.name" required />
+        <InputError :message="errors.name" />
+
+        <div class="grid gap-2">
+          <div class="flex items-center justify-between">
+            <Label class="text-sm font-medium text-foreground">Permissions</Label>
+            <span class="text-xs text-muted-foreground">{{ selectedEditPermissions.length }} selected</span>
+          </div>
+          <div class="grid max-h-56 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
+            <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
+            <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`edit-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition hover:bg-accent/60">
+              <Checkbox
+                :id="`edit-permission-${permission.id}`"
+                :checked="selectedEditPermissions.includes(String(permission.id))"
+                @update:checked="(checked) => togglePermission(selectedEditPermissions, String(permission.id), checked)"
+              />
+              <span>{{ permission.name }}</span>
+            </label>
+          </div>
+          <input v-for="permissionId in selectedEditPermissions" :key="permissionId" type="hidden" name="permissions[]" :value="permissionId" />
+          <InputError :message="errors.permissions ?? errors['permissions.0']" />
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <Button type="button" variant="ghost" @click="closeEditModal">Cancel</Button>
+          <Button type="submit" :disabled="processing">Update role</Button>
         </div>
       </Form>
     </DialogContent>

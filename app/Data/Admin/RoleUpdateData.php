@@ -6,7 +6,7 @@ namespace App\Data\Admin;
 
 use Spatie\LaravelData\Data;
 
-class RoleCreateData extends Data
+class RoleUpdateData extends Data
 {
     public function __construct(
         public string $name,

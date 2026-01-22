@@ -14,6 +14,7 @@ class ListRoles
     public function execute(): DataCollection|Collection
     {
         $roles = Role::query()
+            ->with(['permissions:id'])
             ->withCount(['permissions', 'users'])
             ->orderBy('name')
             ->get();

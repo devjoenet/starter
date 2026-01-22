@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\StorePermissionController;
 use App\Http\Controllers\Admin\StoreRoleController;
 use App\Http\Controllers\Admin\StoreUserController;
+use App\Http\Controllers\Admin\UpdateRoleController;
 use App\Http\Controllers\Admin\UpdateUserController;
 use App\Http\Controllers\Admin\UsersController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'verified'])
         Route::patch('users/{user}', UpdateUserController::class)->name('users.update');
         Route::get('roles', RolesController::class)->name('roles.index');
         Route::post('roles', StoreRoleController::class)->name('roles.store');
+        Route::patch('roles/{role}', UpdateRoleController::class)->name('roles.update');
         Route::get('permissions', PermissionsController::class)->name('permissions.index');
         Route::post('permissions', StorePermissionController::class)->name('permissions.store');
     });

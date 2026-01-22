@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Actions\Admin;
 
-use App\Data\Admin\RoleCreateData;
+use App\Data\Admin\RoleUpdateData;
 use App\Models\Role;
 
-class CreateRole
+class UpdateRole
 {
-    public function execute(RoleCreateData $data): Role
+    public function execute(Role $role, RoleUpdateData $data): Role
     {
-        $role = Role::query()->create([
+        $role->update([
             'name' => $data->name,
-            'guard_name' => config('auth.defaults.guard'),
         ]);
 
         $role->syncPermissions($data->permissions);

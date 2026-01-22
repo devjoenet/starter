@@ -16,6 +16,10 @@ class RoleListData extends Data
         public int $permissionsCount,
         public int $usersCount,
         public string $createdAt,
+        /**
+         * @var array<int, int>
+         */
+        public array $permissionIds,
     ) {}
 
     public static function fromModel(Role $role): self
@@ -27,6 +31,7 @@ class RoleListData extends Data
             $role->permissions_count ?? 0,
             $role->users_count ?? 0,
             $role->created_at?->toDateTimeString() ?? '',
+            $role->permissions->pluck('id')->all(),
         );
     }
 }

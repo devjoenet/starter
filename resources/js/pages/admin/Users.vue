@@ -3,7 +3,7 @@
   import { index as adminUsers, store as storeUser, update as updateUser } from "@/routes/admin/users";
   import { type BreadcrumbItem } from "@/types";
   import { Form, Head } from "@inertiajs/vue3";
-  import { computed, ref } from "vue";
+  import { computed, ref, watch } from "vue";
 
   import InputError from "@/components/InputError.vue";
   import { Badge } from "@/components/ui/badge";
@@ -20,6 +20,7 @@
     emailVerifiedAt: string | null;
     createdAt: string;
     roleId: number | null;
+    roleName: string | null;
   }
 
   interface RoleOption {
@@ -30,6 +31,7 @@
   interface Props {
     users: UserListItem[];
     roles: RoleOption[];
+    canEditUsers: boolean;
   }
 
   const props = defineProps<Props>();
@@ -43,8 +45,8 @@
 
   const isDetailOpen = ref(false);
   const isCreateOpen = ref(false);
-  const isEditOpen = ref(false);
   const selectedUser = ref<UserListItem | null>(null);
+  const selectedRoleId = ref<number | null>(null);
 
   const selectedUserInitials = computed(() => {
     if (!selectedUser.value) {
@@ -64,19 +66,25 @@
     isDetailOpen.value = true;
   };
 
-  const openEdit = (user: UserListItem) => {
-    selectedUser.value = user;
-    isEditOpen.value = true;
-    isDetailOpen.value = false;
-  };
-
   const closeCreateModal = () => {
     isCreateOpen.value = false;
   };
 
-  const closeEditModal = () => {
-    isEditOpen.value = false;
-  };
+  const canSubmitUpdate = computed(() => {
+    if (!props.canEditUsers || !selectedUser.value) {
+      return false;
+    }
+
+    return selectedRoleId.value !== null && selectedRoleId.value !== selectedUser.value.roleId;
+  });
+
+  watch(
+    selectedUser,
+    (user) => {
+      selectedRoleId.value = user?.roleId ?? null;
+    },
+    { immediate: true },
+  );
 </script>
 
 <template>
@@ -139,7 +147,10 @@
         <DialogDescription>Review profile and access information.</DialogDescription>
       </DialogHeader>
 
-      <div v-if="selectedUser" class="flex flex-col gap-6">
+      <Form v-if="selectedUser" v-bind="updateUser.form(selectedUser.id)" class="flex flex-col gap-6" v-slot="{ processing }">
+        <input type="hidden" name="name" :value="selectedUser.name" />
+        <input type="hidden" name="email" :value="selectedUser.email" />
+
         <div class="flex items-center gap-4">
           <div class="flex size-14 items-center justify-center rounded-full border border-border bg-muted text-lg font-semibold text-foreground">
             {{ selectedUserInitials }}
@@ -161,13 +172,29 @@
             <span class="text-muted-foreground">Joined</span>
             <span class="font-medium text-foreground">{{ selectedUser.createdAt }}</span>
           </div>
+          <div class="flex items-center justify-between gap-4">
+            <span class="text-muted-foreground">Role</span>
+            <div v-if="props.canEditUsers" class="w-56">
+              <div class="group relative flex w-full items-center gap-2 rounded-xl border border-input bg-transparent px-3 py-2 text-sm text-foreground shadow-xs transition focus-within:ring-2 focus-within:ring-ring/40">
+                <select id="detail-user-role" v-model="selectedRoleId" name="role_id" class="w-full bg-transparent text-sm text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length" required>
+                  <option :value="null" disabled>Select a role</option>
+                  <option v-for="role in props.roles" :key="role.id" :value="role.id">
+                    {{ role.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <span v-else class="font-medium text-foreground">
+              {{ selectedUser.roleName ?? "No role assigned" }}
+            </span>
+          </div>
         </div>
 
         <div class="flex items-center justify-end gap-3">
           <Button type="button" variant="ghost" @click="isDetailOpen = false">Close</Button>
-          <Button type="button" @click="openEdit(selectedUser)">Edit user</Button>
+          <Button type="submit" :disabled="!canSubmitUpdate || processing">Update user</Button>
         </div>
-      </div>
+      </Form>
     </DialogContent>
   </Dialog>
 
@@ -212,38 +239,4 @@
     </DialogContent>
   </Dialog>
 
-  <Dialog :open="isEditOpen" @update:open="isEditOpen = $event">
-    <DialogContent class="sm:max-w-lg">
-      <DialogHeader class="gap-2">
-        <DialogTitle>Edit user</DialogTitle>
-        <DialogDescription>Update their profile details and access.</DialogDescription>
-      </DialogHeader>
-
-      <Form v-if="selectedUser" v-bind="updateUser.form(selectedUser.id)" class="grid gap-4" :options="{ onSuccess: closeEditModal }" v-slot="{ errors, processing }">
-        <Input id="edit-user-name" name="name" label="Full name" variant="filled" required :default-value="selectedUser.name" />
-        <InputError :message="errors.name" />
-
-        <Input id="edit-user-email" name="email" type="email" label="Email address" variant="filled" required :default-value="selectedUser.email" />
-        <InputError :message="errors.email" />
-
-        <div class="grid gap-1.5">
-          <Label for="edit-user-role">Role</Label>
-          <div class="group relative flex w-full items-center gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base text-foreground shadow-xs transition focus-within:ring-2 focus-within:ring-ring/40">
-            <select id="edit-user-role" name="role_id" class="w-full bg-transparent text-base text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length" required :value="selectedUser.roleId ?? ''">
-              <option value="" disabled>Select a role</option>
-              <option v-for="role in props.roles" :key="role.id" :value="role.id">
-                {{ role.name }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <InputError :message="errors.role_id" />
-
-        <div class="flex items-center justify-end gap-3 pt-2">
-          <Button type="button" variant="ghost" @click="closeEditModal">Cancel</Button>
-          <Button type="submit" :disabled="processing">Save changes</Button>
-        </div>
-      </Form>
-    </DialogContent>
-  </Dialog>
 </template>

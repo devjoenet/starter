@@ -9,9 +9,10 @@
   import { Badge } from "@/components/ui/badge";
   import { Button } from "@/components/ui/button";
   import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+  import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
   import { Input } from "@/components/ui/input";
   import { Label } from "@/components/ui/label";
-  import { Plus, UserRound } from "lucide-vue-next";
+  import { ChevronDown, Plus, UserRound } from "lucide-vue-next";
 
   interface UserListItem {
     id: number;
@@ -47,6 +48,7 @@
   const isCreateOpen = ref(false);
   const selectedUser = ref<UserListItem | null>(null);
   const selectedRoleId = ref<number | null>(null);
+  const selectedCreateRoleId = ref<string | null>(null);
 
   const selectedUserInitials = computed(() => {
     if (!selectedUser.value) {
@@ -78,6 +80,14 @@
     return selectedRoleId.value !== null && selectedRoleId.value !== selectedUser.value.roleId;
   });
 
+  const selectedCreateRoleLabel = computed(() => {
+    if (!selectedCreateRoleId.value) {
+      return "Select a role";
+    }
+
+    return props.roles.find((role) => String(role.id) === selectedCreateRoleId.value)?.name ?? "Select a role";
+  });
+
   watch(
     selectedUser,
     (user) => {
@@ -85,6 +95,12 @@
     },
     { immediate: true },
   );
+
+  watch(isCreateOpen, (open) => {
+    if (!open) {
+      selectedCreateRoleId.value = null;
+    }
+  });
 </script>
 
 <template>
@@ -205,29 +221,37 @@
         <DialogDescription>Invite a new teammate and assign their access.</DialogDescription>
       </DialogHeader>
 
-      <Form v-bind="storeUser.form()" class="grid gap-4" reset-on-success :options="{ onSuccess: closeCreateModal }" v-slot="{ errors, processing }">
-        <Input id="create-user-name" name="name" label="Full name" variant="filled" required />
+      <Form v-bind="storeUser.form()" class="grid gap-4" reset-on-success :options="{ onSuccess: closeCreateModal }" autocomplete="off" v-slot="{ errors, processing }">
+        <Input id="create-user-name" name="name" label="Full name" variant="filled" autocomplete="off" required />
         <InputError :message="errors.name" />
 
-        <Input id="create-user-email" name="email" type="email" label="Email address" variant="filled" required />
+        <Input id="create-user-email" name="email" type="email" label="Email address" variant="filled" autocomplete="off" required />
         <InputError :message="errors.email" />
 
-        <Input id="create-user-password" name="password" type="password" label="Password" variant="filled" required />
+        <Input id="create-user-password" name="password" type="password" label="Password" variant="filled" autocomplete="new-password" required />
         <InputError :message="errors.password" />
 
-        <Input id="create-user-password-confirmation" name="password_confirmation" type="password" label="Confirm password" variant="filled" required />
+        <Input id="create-user-password-confirmation" name="password_confirmation" type="password" label="Confirm password" variant="filled" autocomplete="new-password" required />
         <InputError :message="errors.password_confirmation" />
 
         <div class="grid gap-1.5">
           <Label for="create-user-role">Role</Label>
-          <div class="group relative flex w-full items-center gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base text-foreground shadow-xs transition focus-within:ring-2 focus-within:ring-ring/40">
-            <select id="create-user-role" name="role_id" class="w-full bg-transparent text-base text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length" required>
-              <option value="" disabled selected>Select a role</option>
-              <option v-for="role in props.roles" :key="role.id" :value="role.id">
-                {{ role.name }}
-              </option>
-            </select>
-          </div>
+          <input type="hidden" name="role_id" :value="selectedCreateRoleId ?? ''" />
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <button id="create-user-role" type="button" class="group flex w-full items-center justify-between gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base shadow-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length">
+                <span :class="selectedCreateRoleId ? 'text-foreground' : 'text-muted-foreground'">{{ selectedCreateRoleLabel }}</span>
+                <ChevronDown class="size-4 text-muted-foreground transition group-data-[state=open]:rotate-180" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent class="w-(--reka-dropdown-menu-trigger-width) min-w-56 rounded-lg" align="start">
+              <DropdownMenuRadioGroup v-model="selectedCreateRoleId">
+                <DropdownMenuRadioItem v-for="role in props.roles" :key="role.id" :value="String(role.id)">
+                  {{ role.name }}
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <InputError :message="errors.role_id" />
 

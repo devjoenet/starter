@@ -54,9 +54,7 @@
     cn(
       "group relative flex w-full items-center gap-2 rounded-xl transition",
       "focus-within:ring-ring/40 focus-within:ring-2",
-      props.variant === "filled"
-        ? "border border-transparent bg-[color:var(--surface-variant)] shadow-xs"
-        : "border border-input bg-transparent shadow-xs",
+      props.variant === "filled" ? "border border-transparent bg-[color:var(--surface-variant)] shadow-xs" : "border border-input bg-transparent shadow-xs",
       props.density === "compact" ? "px-3 pt-3 pb-1.5" : "px-3 pt-4 pb-2",
       "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
       props.class,
@@ -64,21 +62,14 @@
   );
 
   const inputClasses = computed(() =>
-    cn(
-      "peer w-full bg-transparent text-base text-foreground outline-none",
-      "placeholder:text-muted-foreground/0 selection:bg-primary selection:text-primary-foreground",
-      "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-      props.inputClass,
-    ),
+    cn("peer w-full bg-transparent text-base text-foreground outline-none", "placeholder:text-muted-foreground/0 selection:bg-primary selection:text-primary-foreground", "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", props.inputClass),
   );
 
   const labelClasses = computed(() =>
     cn(
       "pointer-events-none absolute left-3 text-sm text-muted-foreground transition-all",
       props.density === "compact" ? "top-3" : "top-4",
-      props.density === "compact"
-        ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5"
-        : "peer-placeholder-shown:top-4 peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
+      props.density === "compact" ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5" : "peer-placeholder-shown:top-4 peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
       "peer-placeholder-shown:text-sm peer-focus:text-xs peer-[&:not(:placeholder-shown)]:text-xs",
       props.variant === "filled" ? "text-muted-foreground/80" : "bg-background px-1",
       "peer-focus:text-primary",

@@ -78,13 +78,7 @@
       </div>
 
       <div v-if="props.users.length" class="grid gap-4">
-        <button
-          v-for="user in props.users"
-          :key="user.id"
-          type="button"
-          class="group flex w-full items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 text-left shadow-xs transition hover:border-primary/50 hover:bg-accent/40"
-          @click="openDetail(user)"
-        >
+        <button v-for="user in props.users" :key="user.id" type="button" class="group flex w-full items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 text-left shadow-xs transition hover:border-primary/50 hover:bg-accent/40" @click="openDetail(user)">
           <div class="flex items-center gap-4">
             <div class="flex size-11 items-center justify-center rounded-full border border-border bg-muted text-sm font-semibold text-foreground">
               {{ user.name.charAt(0) }}
@@ -160,13 +154,7 @@
         <DialogDescription>Invite a new teammate and assign their access.</DialogDescription>
       </DialogHeader>
 
-      <Form
-        v-bind="storeUser.form()"
-        class="grid gap-4"
-        reset-on-success
-        :options="{ onSuccess: closeCreateModal }"
-        v-slot="{ errors, processing }"
-      >
+      <Form v-bind="storeUser.form()" class="grid gap-4" reset-on-success :options="{ onSuccess: closeCreateModal }" v-slot="{ errors, processing }">
         <Input id="create-user-name" name="name" label="Full name" variant="filled" required />
         <InputError :message="errors.name" />
 

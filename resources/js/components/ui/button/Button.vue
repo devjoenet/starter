@@ -47,14 +47,7 @@
 </script>
 
 <template>
-  <Primitive
-    ref="buttonRef"
-    data-slot="button"
-    :as="as"
-    :as-child="asChild"
-    :class="cn(buttonVariants({ variant, size }), props.class)"
-    @pointerdown="createRipple"
-  >
+  <Primitive ref="buttonRef" data-slot="button" :as="as" :as-child="asChild" :class="cn(buttonVariants({ variant, size }), props.class)" @pointerdown="createRipple">
     <slot />
   </Primitive>
 </template>

@@ -66,13 +66,7 @@
       </div>
 
       <div v-if="props.roles.length" class="grid gap-4">
-        <button
-          v-for="role in props.roles"
-          :key="role.id"
-          type="button"
-          class="group flex w-full items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 text-left shadow-xs transition hover:border-primary/50 hover:bg-accent/40"
-          @click="openDetail(role)"
-        >
+        <button v-for="role in props.roles" :key="role.id" type="button" class="group flex w-full items-center justify-between gap-4 rounded-xl border border-border bg-card p-4 text-left shadow-xs transition hover:border-primary/50 hover:bg-accent/40" @click="openDetail(role)">
           <div class="flex flex-col gap-1">
             <span class="text-sm font-medium text-foreground">{{ role.name }}</span>
             <span class="text-xs text-muted-foreground">Guard: {{ role.guardName }}</span>
@@ -137,13 +131,7 @@
         <DialogTitle>Create role</DialogTitle>
         <DialogDescription>Set up a new access level for your team.</DialogDescription>
       </DialogHeader>
-      <Form
-        v-bind="storeRole.form()"
-        class="grid gap-4"
-        reset-on-success
-        :options="{ onSuccess: closeCreateModal }"
-        v-slot="{ errors, processing }"
-      >
+      <Form v-bind="storeRole.form()" class="grid gap-4" reset-on-success :options="{ onSuccess: closeCreateModal }" v-slot="{ errors, processing }">
         <Input id="create-role-name" name="name" label="Role name" variant="filled" required />
         <InputError :message="errors.name" />
 

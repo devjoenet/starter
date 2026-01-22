@@ -131,13 +131,7 @@
         <DialogTitle>Create permission</DialogTitle>
         <DialogDescription>Define a new action that roles can use.</DialogDescription>
       </DialogHeader>
-      <Form
-        v-bind="storePermission.form()"
-        class="grid gap-4"
-        reset-on-success
-        :options="{ onSuccess: closeCreateModal }"
-        v-slot="{ errors, processing }"
-      >
+      <Form v-bind="storePermission.form()" class="grid gap-4" reset-on-success :options="{ onSuccess: closeCreateModal }" v-slot="{ errors, processing }">
         <Input id="create-permission-name" name="name" label="Permission name" variant="filled" required />
         <InputError :message="errors.name" />
 

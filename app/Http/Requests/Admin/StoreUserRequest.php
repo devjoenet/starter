@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class StoreUserRequest extends FormRequest
@@ -23,6 +24,7 @@ class StoreUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            'role_id' => ['required', Rule::exists('roles', 'id')],
         ];
     }
 
@@ -38,6 +40,8 @@ class StoreUserRequest extends FormRequest
             'email.unique' => 'That email is already in use.',
             'password.required' => 'Please provide a password.',
             'password.confirmed' => 'The password confirmation does not match.',
+            'role_id.required' => 'Please select a role for this user.',
+            'role_id.exists' => 'Please choose a valid role.',
         ];
     }
 }

@@ -10,6 +10,7 @@
   import { Button } from "@/components/ui/button";
   import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
   import { Input } from "@/components/ui/input";
+  import { Label } from "@/components/ui/label";
   import { Plus, UserRound } from "lucide-vue-next";
 
   interface UserListItem {
@@ -20,8 +21,14 @@
     createdAt: string;
   }
 
+  interface RoleOption {
+    id: number;
+    name: string;
+  }
+
   interface Props {
     users: UserListItem[];
+    roles: RoleOption[];
   }
 
   const props = defineProps<Props>();
@@ -166,6 +173,19 @@
 
         <Input id="create-user-password-confirmation" name="password_confirmation" type="password" label="Confirm password" variant="filled" required />
         <InputError :message="errors.password_confirmation" />
+
+        <div class="grid gap-1.5">
+          <Label for="create-user-role">Role</Label>
+          <div class="group relative flex w-full items-center gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base text-foreground shadow-xs transition focus-within:ring-2 focus-within:ring-ring/40">
+            <select id="create-user-role" name="role_id" class="w-full bg-transparent text-base text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length" required>
+              <option value="" disabled selected>Select a role</option>
+              <option v-for="role in props.roles" :key="role.id" :value="role.id">
+                {{ role.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <InputError :message="errors.role_id" />
 
         <div class="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="ghost" @click="closeCreateModal">Cancel</Button>

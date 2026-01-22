@@ -4,16 +4,21 @@
   import { type NavItem } from "@/types";
   import { Link } from "@inertiajs/vue3";
 
-  defineProps<{
+  interface Props {
     items: NavItem[];
-  }>();
+    label?: string;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    label: "Platform",
+  });
 
   const { urlIsActive } = useActiveUrl();
 </script>
 
 <template>
   <SidebarGroup class="px-2 py-0">
-    <SidebarGroupLabel>Platform</SidebarGroupLabel>
+    <SidebarGroupLabel>{{ props.label }}</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in items" :key="item.title">
         <SidebarMenuButton as-child :is-active="urlIsActive(item.href)" :tooltip="item.title">

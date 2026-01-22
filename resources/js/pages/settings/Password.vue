@@ -9,7 +9,6 @@
   import HeadingSmall from "@/components/HeadingSmall.vue";
   import { Button } from "@/components/ui/button";
   import { Input } from "@/components/ui/input";
-  import { Label } from "@/components/ui/label";
   import { type BreadcrumbItem } from "@/types";
 
   const breadcrumbItems: BreadcrumbItem[] = [
@@ -41,20 +40,17 @@
           v-slot="{ errors, processing, recentlySuccessful }"
         >
           <div class="grid gap-2">
-            <Label for="current_password">Current password</Label>
-            <Input id="current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" placeholder="Current password" />
+            <Input id="current_password" name="current_password" type="password" autocomplete="current-password" label="Current password" variant="filled" />
             <InputError :message="errors.current_password" />
           </div>
 
           <div class="grid gap-2">
-            <Label for="password">New password</Label>
-            <Input id="password" name="password" type="password" class="mt-1 block w-full" autocomplete="new-password" placeholder="New password" />
+            <Input id="password" name="password" type="password" autocomplete="new-password" label="New password" variant="filled" />
             <InputError :message="errors.password" />
           </div>
 
           <div class="grid gap-2">
-            <Label for="password_confirmation">Confirm password</Label>
-            <Input id="password_confirmation" name="password_confirmation" type="password" class="mt-1 block w-full" autocomplete="new-password" placeholder="Confirm password" />
+            <Input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" label="Confirm password" variant="filled" />
             <InputError :message="errors.password_confirmation" />
           </div>
 

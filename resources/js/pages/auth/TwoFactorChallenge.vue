@@ -71,7 +71,7 @@
 
       <template v-else>
         <Form v-bind="store.form()" class="space-y-4" reset-on-error #default="{ errors, processing, clearErrors }">
-          <Input name="recovery_code" type="text" placeholder="Enter recovery code" :autofocus="showRecoveryInput" required />
+          <Input name="recovery_code" type="text" :autofocus="showRecoveryInput" required label="Recovery code" variant="filled" />
           <InputError :message="errors.recovery_code" />
           <Button type="submit" class="w-full" :disabled="processing">Continue</Button>
 

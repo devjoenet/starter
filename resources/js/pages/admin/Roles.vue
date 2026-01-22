@@ -205,11 +205,7 @@
           <div class="grid max-h-56 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
             <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
             <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`create-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition hover:bg-accent/60">
-              <Checkbox
-                :id="`create-permission-${permission.id}`"
-                :checked="selectedCreatePermissions.includes(String(permission.id))"
-                @update:checked="(checked) => togglePermission(selectedCreatePermissions, String(permission.id), checked)"
-              />
+              <Checkbox :id="`create-permission-${permission.id}`" :checked="selectedCreatePermissions.includes(String(permission.id))" @update:checked="(checked) => togglePermission(selectedCreatePermissions, String(permission.id), checked)" />
               <span>{{ permission.name }}</span>
             </label>
           </div>
@@ -243,11 +239,7 @@
           <div class="grid max-h-56 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
             <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
             <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`edit-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition hover:bg-accent/60">
-              <Checkbox
-                :id="`edit-permission-${permission.id}`"
-                :checked="selectedEditPermissions.includes(String(permission.id))"
-                @update:checked="(checked) => togglePermission(selectedEditPermissions, String(permission.id), checked)"
-              />
+              <Checkbox :id="`edit-permission-${permission.id}`" :checked="selectedEditPermissions.includes(String(permission.id))" @update:checked="(checked) => togglePermission(selectedEditPermissions, String(permission.id), checked)" />
               <span>{{ permission.name }}</span>
             </label>
           </div>

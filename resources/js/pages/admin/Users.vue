@@ -239,7 +239,12 @@
           <input type="hidden" name="role_id" :value="selectedCreateRoleId ?? ''" />
           <DropdownMenu>
             <DropdownMenuTrigger as-child>
-              <button id="create-user-role" type="button" class="group flex w-full items-center justify-between gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base shadow-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-50" :disabled="!props.roles.length">
+              <button
+                id="create-user-role"
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl border border-input bg-transparent px-3 py-3 text-base shadow-xs transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="!props.roles.length"
+              >
                 <span :class="selectedCreateRoleId ? 'text-foreground' : 'text-muted-foreground'">{{ selectedCreateRoleLabel }}</span>
                 <ChevronDown class="size-4 text-muted-foreground transition group-data-[state=open]:rotate-180" />
               </button>
@@ -262,5 +267,4 @@
       </Form>
     </DialogContent>
   </Dialog>
-
 </template>

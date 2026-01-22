@@ -69,12 +69,8 @@
     cn(
       "pointer-events-none absolute left-3 text-sm text-muted-foreground transition-all",
       props.density === "compact" ? "top-3" : "top-[1.125rem]",
-      props.density === "compact"
-        ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5"
-        : "peer-placeholder-shown:top-[1.125rem] peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
-      props.density === "compact"
-        ? "peer-focus:-translate-y-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-0.5"
-        : "peer-focus:-translate-y-1 peer-[&:not(:placeholder-shown)]:-translate-y-1",
+      props.density === "compact" ? "peer-placeholder-shown:top-3 peer-focus:top-1.5 peer-[&:not(:placeholder-shown)]:top-1.5" : "peer-placeholder-shown:top-[1.125rem] peer-focus:top-2 peer-[&:not(:placeholder-shown)]:top-2",
+      props.density === "compact" ? "peer-focus:-translate-y-0.5 peer-[&:not(:placeholder-shown)]:-translate-y-0.5" : "peer-focus:-translate-y-1 peer-[&:not(:placeholder-shown)]:-translate-y-1",
       "peer-placeholder-shown:text-sm peer-focus:text-xs peer-[&:not(:placeholder-shown)]:text-xs",
       props.variant === "filled" ? "text-muted-foreground/80" : "bg-background px-1",
       "peer-focus:text-primary",

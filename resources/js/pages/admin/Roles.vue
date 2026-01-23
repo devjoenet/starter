@@ -3,7 +3,7 @@
   import { index as adminRoles, store as storeRole, update as updateRole } from "@/routes/admin/roles";
   import { type BreadcrumbItem } from "@/types";
   import { Form, Head } from "@inertiajs/vue3";
-  import { ref } from "vue";
+  import { computed, ref } from "vue";
 
   import InputError from "@/components/InputError.vue";
   import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@
   interface Props {
     roles: RoleListItem[];
     permissions: PermissionListItem[];
+    canEditRoles: boolean;
   }
 
   const props = defineProps<Props>();
@@ -45,14 +46,13 @@
 
   const isDetailOpen = ref(false);
   const isCreateOpen = ref(false);
-  const isEditOpen = ref(false);
   const selectedRole = ref<RoleListItem | null>(null);
-  const selectedRoleForEdit = ref<RoleListItem | null>(null);
   const selectedCreatePermissions = ref<string[]>([]);
-  const selectedEditPermissions = ref<string[]>([]);
+  const selectedDetailPermissions = ref<string[]>([]);
 
   const openDetail = (role: RoleListItem) => {
     selectedRole.value = role;
+    selectedDetailPermissions.value = role.permissionIds.map((permissionId) => String(permissionId));
     isDetailOpen.value = true;
   };
 
@@ -66,26 +66,22 @@
     selectedCreatePermissions.value = [];
   };
 
-  const openEditModal = (role: RoleListItem) => {
-    selectedRoleForEdit.value = role;
-    selectedEditPermissions.value = role.permissionIds.map((permissionId) => String(permissionId));
-    isEditOpen.value = true;
-  };
-
-  const closeEditModal = () => {
-    isEditOpen.value = false;
-    selectedRoleForEdit.value = null;
-    selectedEditPermissions.value = [];
-  };
-
-  const openEditFromDetail = () => {
+  const hasPermissionChanges = computed(() => {
     if (!selectedRole.value) {
-      return;
+      return false;
     }
 
-    openEditModal(selectedRole.value);
-    isDetailOpen.value = false;
-  };
+    const originalIds = selectedRole.value.permissionIds.map(String);
+    const selectedIds = selectedDetailPermissions.value;
+
+    if (originalIds.length !== selectedIds.length) {
+      return true;
+    }
+
+    return originalIds.some((permissionId) => !selectedIds.includes(permissionId));
+  });
+
+  const canSubmitUpdate = computed(() => props.canEditRoles && hasPermissionChanges.value);
 
   const togglePermission = (target: typeof selectedCreatePermissions, permissionId: string, checked: boolean | "indeterminate") => {
     const isChecked = checked === true;
@@ -150,13 +146,14 @@
   </AppLayout>
 
   <Dialog :open="isDetailOpen" @update:open="isDetailOpen = $event">
-    <DialogContent class="sm:max-w-lg">
+    <DialogContent class="sm:max-w-2xl">
       <DialogHeader class="gap-2">
         <DialogTitle>Role details</DialogTitle>
         <DialogDescription>Understand the access this role provides.</DialogDescription>
       </DialogHeader>
 
-      <div v-if="selectedRole" class="grid gap-4">
+      <Form v-if="selectedRole" v-bind="updateRole.form(selectedRole.id)" class="grid gap-4" v-slot="{ processing }">
+        <input type="hidden" name="name" :value="selectedRole.name" />
         <div class="rounded-lg border border-border p-4">
           <p class="text-base font-semibold text-foreground">{{ selectedRole.name }}</p>
           <p class="text-sm text-muted-foreground">Guard: {{ selectedRole.guardName }}</p>
@@ -176,14 +173,34 @@
           </div>
         </div>
 
+        <div class="grid gap-2">
+          <div class="flex items-center justify-between">
+            <Label class="text-sm font-medium text-foreground">Assigned permissions</Label>
+            <span class="text-xs text-muted-foreground">{{ selectedDetailPermissions.length }} selected</span>
+          </div>
+          <div class="grid max-h-64 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
+            <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
+            <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`detail-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground">
+              <Checkbox
+                :id="`detail-permission-${permission.id}`"
+                :checked="selectedDetailPermissions.includes(String(permission.id))"
+                :disabled="!props.canEditRoles"
+                @update:checked="(checked) => togglePermission(selectedDetailPermissions, String(permission.id), checked)"
+              />
+              <span>{{ permission.name }}</span>
+            </label>
+          </div>
+          <input v-for="permissionId in selectedDetailPermissions" :key="permissionId" type="hidden" name="permissions[]" :value="permissionId" />
+        </div>
+
         <div class="flex items-center justify-end gap-3">
           <Button type="button" variant="ghost" @click="isDetailOpen = false">Close</Button>
-          <Button type="button" class="gap-2" @click="openEditFromDetail">
+          <Button type="submit" class="gap-2" :disabled="!canSubmitUpdate || processing">
             <Pencil class="size-4" />
-            Edit role
+            Update role
           </Button>
         </div>
-      </div>
+      </Form>
     </DialogContent>
   </Dialog>
 
@@ -221,37 +238,4 @@
     </DialogContent>
   </Dialog>
 
-  <Dialog :open="isEditOpen" @update:open="isEditOpen = $event">
-    <DialogContent class="sm:max-w-lg">
-      <DialogHeader class="gap-2">
-        <DialogTitle>Edit role</DialogTitle>
-        <DialogDescription>Adjust the role name and assigned permissions.</DialogDescription>
-      </DialogHeader>
-      <Form v-if="selectedRoleForEdit" v-bind="updateRole.form(selectedRoleForEdit.id)" class="grid gap-4" reset-on-success :options="{ onSuccess: closeEditModal }" v-slot="{ errors, processing }">
-        <Input id="edit-role-name" name="name" label="Role name" variant="filled" :default-value="selectedRoleForEdit.name" required />
-        <InputError :message="errors.name" />
-
-        <div class="grid gap-2">
-          <div class="flex items-center justify-between">
-            <Label class="text-sm font-medium text-foreground">Permissions</Label>
-            <span class="text-xs text-muted-foreground">{{ selectedEditPermissions.length }} selected</span>
-          </div>
-          <div class="grid max-h-56 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
-            <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
-            <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`edit-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground transition hover:bg-accent/60">
-              <Checkbox :id="`edit-permission-${permission.id}`" :checked="selectedEditPermissions.includes(String(permission.id))" @update:checked="(checked) => togglePermission(selectedEditPermissions, String(permission.id), checked)" />
-              <span>{{ permission.name }}</span>
-            </label>
-          </div>
-          <input v-for="permissionId in selectedEditPermissions" :key="permissionId" type="hidden" name="permissions[]" :value="permissionId" />
-          <InputError :message="errors.permissions ?? errors['permissions.0']" />
-        </div>
-
-        <div class="flex items-center justify-end gap-3 pt-2">
-          <Button type="button" variant="ghost" @click="closeEditModal">Cancel</Button>
-          <Button type="submit" :disabled="processing">Update role</Button>
-        </div>
-      </Form>
-    </DialogContent>
-  </Dialog>
 </template>

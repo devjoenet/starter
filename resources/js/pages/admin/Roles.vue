@@ -32,6 +32,7 @@
   interface Props {
     roles: RoleListItem[];
     permissions: PermissionListItem[];
+    canEditRoles: boolean;
   }
 
   const props = defineProps<Props>();
@@ -150,7 +151,7 @@
   </AppLayout>
 
   <Dialog :open="isDetailOpen" @update:open="isDetailOpen = $event">
-    <DialogContent class="sm:max-w-lg">
+    <DialogContent class="sm:max-w-2xl">
       <DialogHeader class="gap-2">
         <DialogTitle>Role details</DialogTitle>
         <DialogDescription>Understand the access this role provides.</DialogDescription>
@@ -173,6 +174,20 @@
           <div class="flex items-center justify-between gap-4">
             <span class="text-muted-foreground">Created</span>
             <span class="font-medium text-foreground">{{ selectedRole.createdAt }}</span>
+          </div>
+        </div>
+
+        <div class="grid gap-2">
+          <div class="flex items-center justify-between">
+            <Label class="text-sm font-medium text-foreground">Assigned permissions</Label>
+            <span class="text-xs text-muted-foreground">{{ selectedRole.permissionIds.length }} selected</span>
+          </div>
+          <div class="grid max-h-64 gap-2 overflow-y-auto rounded-xl border border-border bg-muted/30 p-3">
+            <p v-if="!props.permissions.length" class="text-xs text-muted-foreground">No permissions available yet.</p>
+            <label v-for="permission in props.permissions" v-else :key="permission.id" :for="`detail-permission-${permission.id}`" class="flex items-center gap-3 rounded-lg px-2 py-2 text-sm text-foreground">
+              <Checkbox :id="`detail-permission-${permission.id}`" :checked="selectedRole.permissionIds.includes(permission.id)" disabled />
+              <span>{{ permission.name }}</span>
+            </label>
           </div>
         </div>
 
@@ -249,7 +264,7 @@
 
         <div class="flex items-center justify-end gap-3 pt-2">
           <Button type="button" variant="ghost" @click="closeEditModal">Cancel</Button>
-          <Button type="submit" :disabled="processing">Update role</Button>
+          <Button type="submit" :disabled="!props.canEditRoles || processing">Update role</Button>
         </div>
       </Form>
     </DialogContent>

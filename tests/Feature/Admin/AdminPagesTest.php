@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -41,6 +42,27 @@ it('renders the users page with roles', function () {
     $response->assertOk();
     $response->assertJsonPath('component', 'admin/Users');
     $response->assertJsonPath('props.roles.0.name', 'Account Lead');
+});
+
+it('shares edit role permission in the roles page props', function () {
+    $user = User::factory()->create();
+    $permission = Permission::query()->create([
+        'name' => 'editRoles',
+        'guard_name' => config('auth.defaults.guard'),
+    ]);
+
+    $user->givePermissionTo($permission);
+
+    $this->actingAs($user);
+
+    $response = $this->get(route('admin.roles.index'), [
+        'Accept' => 'application/json',
+        'X-Inertia' => 'true',
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonPath('component', 'admin/Roles');
+    $response->assertJsonPath('props.canEditRoles', true);
 });
 
 dataset('adminPages', [

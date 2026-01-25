@@ -5,13 +5,12 @@ includes:
 parameters:
   level: 5
   ignoreErrors:
-        -
-            message: "#^Called 'env' outside of the config directory which returns null when the config is cached, use 'config'.$#"
-            path: *config/*.php
+    -
+      identifier: larastan.noEnvCallsOutsideOfConfig
+      path: **/config/**
 
   paths:
     - app
-    - config
     - bootstrap
     - database/factories
     - routes

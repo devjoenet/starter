@@ -13,6 +13,7 @@ class CreatePermission
     {
         return Permission::query()->create([
             'name' => $data->name,
+            'group' => $data->group,
             'guard_name' => config('auth.defaults.guard'),
         ]);
     }
